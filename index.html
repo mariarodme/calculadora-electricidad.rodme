@@ -1,129 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Electricity Calculator – Condominium</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --gold: #C9A84C; --gold-light: #E8C97A;
-      --dark: #1A1A2E; --dark2: #16213E; --dark3: #0F3460;
-      --cream: #F5F0E8; --cream2: #EDE8DC;
-      --text: #2C2C2C; --muted: #7A7A7A; --white: #FFFFFF;
-      --border: rgba(201,168,76,0.25);
-    }
-    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
-    header { background: var(--dark); padding: 2rem 2rem 1.5rem; text-align: center; border-bottom: 2px solid var(--gold); }
-    header h1 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.9rem; letter-spacing: 0.02em; }
-    header p { color: rgba(255,255,255,0.5); font-size: 0.82rem; margin-top: 0.35rem; letter-spacing: 0.08em; text-transform: uppercase; }
-    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-    .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 16px rgba(0,0,0,0.05); }
-    .card-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--dark3); border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
-    .card-title::before { content: ''; display: inline-block; width: 3px; height: 1.1rem; background: var(--gold); border-radius: 2px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; }
-    @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-    label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.4rem; }
-    input { width: 100%; padding: 0.7rem 1rem; border: 1.5px solid #DDD; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); background: var(--cream); transition: border-color 0.2s; outline: none; }
-    input:focus { border-color: var(--gold); background: var(--white); }
-    input[readonly] { background: var(--cream2); color: var(--muted); cursor: default; }
-    .btn-primary { background: var(--dark); color: var(--gold); border: 1.5px solid var(--gold); padding: 0.85rem 2.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: background 0.2s, color 0.2s; }
-    .btn-primary:hover { background: var(--gold); color: var(--dark); }
-    .btn-secondary { background: transparent; color: var(--dark3); border: 1.5px solid var(--dark3); padding: 0.85rem 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: background 0.2s, color 0.2s; }
-    .btn-secondary:hover { background: var(--dark3); color: var(--white); }
-    .btn-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem; }
-    .result-panel { background: var(--dark); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; display: none; }
-    .result-panel.visible { display: block; }
-    .result-panel h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.1rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 0.75rem; }
-    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem; }
-    .result-row:last-child { border-bottom: none; }
-    .result-label { color: rgba(255,255,255,0.55); }
-    .result-value { color: var(--white); font-weight: 500; }
-    .result-total { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1.5px solid var(--gold); }
-    .result-total .label { color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
-    .result-total .amount { color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.9rem; }
-    .info-box { background: rgba(201,168,76,0.08); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.83rem; color: var(--muted); margin-top: 1rem; }
-    footer { text-align: center; padding: 1.5rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
-  </style>
-</head>
-<body>
-
-<header>
-  <h1>&#9889; Electricity Calculator</h1>
-  <p>Condominium &middot; Client Billing</p>
-</header>
-
-<div class="container">
-
-  <div class="card">
-    <div class="card-title">Client Information</div>
-    <div class="grid-2">
-      <div><label>Client Name</label><input type="text" id="clientName" placeholder="e.g. John Smith" /></div>
-      <div><label>Unit Number</label><input type="text" id="unitNumber" placeholder="e.g. 4B" /></div>
-      <div><label>Check-in Date</label><input type="date" id="checkIn" /></div>
-      <div><label>Check-out Date</label><input type="date" id="checkOut" /></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Meter Readings</div>
-    <div class="grid-3">
-      <div><label>Check-Out Reading (kWh)</label><input type="number" id="currReading" placeholder="0" min="0" step="0.01" /></div>
-      <div><label>Check-In Reading (kWh)</label><input type="number" id="prevReading" placeholder="0" min="0" step="0.01" /></div>
-      <div><label>Consumption (kWh) = Check-Out − Check-In</label><input type="number" id="consumption" placeholder="&mdash;" readonly /></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Rates &amp; Exchange Rate</div>
-    <div class="grid-3">
-      <div><label>Rate per kWh (&#8353;)</label><input type="number" id="rateColones" placeholder="e.g. 120.50" min="0" step="0.01" /></div>
-      <div><label>Exchange Rate (&#8353; per $1)</label><input type="number" id="exchangeRate" placeholder="e.g. 510" min="1" step="0.01" value="510" /></div>
-      <div><label>VAT (%)</label><input type="number" id="vatRate" placeholder="13" min="0" max="100" step="0.01" value="13" /></div>
-    </div>
-    <div class="info-box">&#128161; VAT in Costa Rica for residential electricity is 13%. The exchange rate can be verified at BCCR.</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Prepared By</div>
-    <div class="grid-2">
-      <div><label>Full Name</label><input type="text" id="preparedName" placeholder="e.g. Beatriz Rodriguez" /></div>
-      <div><label>Job Title</label><input type="text" id="preparedTitle" placeholder="e.g. Administrative Accounting Assistant" /></div>
-    </div>
-  </div>
-
-  <div class="btn-row">
-    <button class="btn-primary" onclick="calculate()">Calculate Bill</button>
-    <button class="btn-secondary" onclick="clearForm()">Clear</button>
-  </div>
-
-  <div class="result-panel" id="resultPanel">
-    <h2>&#128196; Invoice Summary</h2>
-    <div class="result-row"><span class="result-label">Client</span><span class="result-value" id="rClientName">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Unit</span><span class="result-value" id="rUnit">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Period</span><span class="result-value" id="rPeriod">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Consumption</span><span class="result-value" id="rConsumption">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Rate per kWh</span><span class="result-value" id="rRate">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Subtotal (excl. VAT)</span><span class="result-value" id="rSubtotal">&mdash;</span></div>
-    <div class="result-row"><span class="result-label" id="rVatLabel">VAT (13%)</span><span class="result-value" id="rVat">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Total in Colones</span><span class="result-value" id="rTotalColones">&mdash;</span></div>
-    <div class="result-row"><span class="result-label">Exchange Rate Used</span><span class="result-value" id="rExchange">&mdash;</span></div>
-    <div class="result-total">
-      <span class="label">Total Due (USD)</span>
-      <span class="amount" id="rTotalUSD">$0.00</span>
-    </div>
-    <div class="btn-row" style="margin-top:1.5rem;">
-      <button class="btn-primary" onclick="printInvoice()">&#128438; Print / Download PDF</button>
-    </div>
-  </div>
-
-</div>
-
-<footer>Electricity Calculator &middot; Condominium &middot; Internal Use</footer>
-
-<script>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Electricity Billing — Monte Carlo Condominiums</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#191919;background:#fff;font-family:Arial,Helvetica,sans-serif}button,input{font:inherit}.wrap{width:min(1040px,calc(100% - 38px));margin:auto}
+header{height:58px;background:#fff;border-bottom:1px solid #ece7e1}.head{height:100%;display:flex;align-items:center;justify-content:space-between}.brand{font-size:13px;letter-spacing:.12em;font-weight:700}.brand span{font-weight:400;color:#777;margin-left:8px}.nav{display:flex;gap:25px;align-items:center;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.nav button{border:0;background:#ff7659;color:#fff;padding:10px 16px;font-size:9px;text-transform:uppercase}
+.hero{background:#f5e9df;min-height:365px;position:relative;overflow:hidden}.hero-in{min-height:365px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative}.hero h1{font-family:"Arial Narrow",Arial,sans-serif;font-size:clamp(70px,10vw,112px);font-weight:300;letter-spacing:.05em;margin:0;line-height:.86}.hero small{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-top:16px}.doodle{position:absolute;border:2px solid #1d1d1d;border-radius:50%;opacity:.75}.d1{width:45px;height:45px;left:8%;bottom:38px}.d2{width:17px;height:17px;right:11%;top:60px}.d3{width:26px;height:12px;right:19%;bottom:65px;border-radius:50%;transform:rotate(25deg)}.line{position:absolute;width:150px;border-top:2px dashed #222;right:7%;bottom:32px;transform:rotate(-14deg);opacity:.55}
+.billing{padding:65px 0 80px}.bill-title{font-family:"Arial Narrow",Arial,sans-serif;font-size:34px;font-weight:400;letter-spacing:.04em;margin:0 0 28px;text-transform:uppercase}.content{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:46px;align-items:start}.form{position:relative}.section{padding:0 0 29px;margin-bottom:29px;border-bottom:1px solid #d8d3ce}.section:last-of-type{margin-bottom:0}.section-head{display:flex;align-items:baseline;gap:13px;margin-bottom:17px}.section-head b{font-size:9px;color:#ff7659}.section h3{font-family:"Arial Narrow",Arial,sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;letter-spacing:.04em;margin:0}.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:#6e6a66}.field input{height:42px;border:1px solid #d0cbc6;background:#fff;padding:0 10px;outline:none}.field input:focus{border-color:#ff7659}.field input[readonly]{background:#f6f3ef;font-weight:700}.hint,.note{font-size:8px;color:#99938e}.note{margin-top:10px}.actions{display:flex;gap:10px;padding-top:25px}.primary,.secondary{height:42px;padding:0 20px;font-size:9px;text-transform:uppercase;letter-spacing:.08em}.primary{border:0;background:#ff7659;color:#fff}.secondary{border:1px solid #1d1d1d;background:#fff}.alert-high{display:none;margin-top:16px;padding:10px;border:1px solid #d8aa85;background:#fff4e9;font-size:9px}.alert-high.visible{display:block}
+.summary{background:#f5e9df;padding:24px}.empty{min-height:225px;display:flex;align-items:center;justify-content:center;text-align:center}.empty small{font-size:8px;text-transform:uppercase;letter-spacing:.15em;color:#777}.empty h3{font-family:"Arial Narrow",Arial,sans-serif;font-size:31px;font-weight:400;letter-spacing:.04em;margin:8px 0 0;text-transform:uppercase}.result-card{display:none}.result-card.visible{display:block}.result-top{text-align:center;padding:5px 0 20px;border-bottom:1px solid #cfc2b8}.result-top .label,.result-label{font-size:8px;text-transform:uppercase;letter-spacing:.12em}.total{font-family:"Arial Narrow",Arial,sans-serif;font-size:45px;margin-top:5px}.total-crc{font-size:9px;color:#777;margin-top:4px}.result-label{margin:15px 0 5px;color:#ff7659;font-weight:700}.result-row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ddd1c8;font-size:9px}.result-row-label{color:#777}.result-row-value{font-weight:700;text-align:right}.result-actions{display:grid;grid-template-columns:repeat(3,1fr);margin:18px -24px -24px;border-top:1px solid #cfc2b8}.result-action-btn{border:0;border-right:1px solid #cfc2b8;background:#fff;padding:11px 2px;font-size:8px;text-transform:uppercase}.result-action-btn:last-child{border-right:0}.result-action-btn svg{display:none}
+footer{border-top:1px solid #e0ddd9;padding:26px 0;font-size:8px;text-transform:uppercase;letter-spacing:.11em;color:#777}.foot{display:flex;justify-content:space-between}
+@media(max-width:820px){.content{grid-template-columns:1fr}.summary{max-width:none}.nav span{display:none}}@media(max-width:620px){.hero{min-height:290px}.hero-in{min-height:290px}.hero h1{font-size:66px}.g2,.g3{grid-template-columns:1fr}.foot{display:block}.foot span{display:block;margin-top:6px}}
+</style></head><body>
+<header><div class="wrap head"><div class="brand">MONTE CARLO <span>CONDOMINIUMS</span></div><div class="nav"><span>Billing</span><span>Meter</span><span>Rates</span><button onclick="document.querySelector('.billing').scrollIntoView({behavior:'smooth'})">Calculate</button></div></div></header>
+<section class="hero"><div class="wrap hero-in"><div class="doodle d1"></div><div class="doodle d2"></div><div class="doodle d3"></div><div class="line"></div><div><h1>ELECTRICITY<br>BILLING</h1><small>Monte Carlo Condominiums</small></div></div></section>
+<section class="billing"><div class="wrap"><h2 class="bill-title">Electricity Billing</h2><div class="content"><div class="form">
+<div class="section"><div class="section-head"><b>01</b><h3>Client Information</h3></div><div class="g2" style="margin-bottom:13px"><div class="field"><label>Client Name *</label><input id="clientName" type="text" placeholder="e.g. John Smith"></div><div class="field"><label>Unit Number *</label><input id="unitNumber" type="text" placeholder="e.g. 4B"></div></div><div class="g2"><div class="field"><label>Check-in Date</label><input id="checkIn" type="date"></div><div class="field"><label>Check-out Date</label><input id="checkOut" type="date"></div></div></div>
+<div class="section"><div class="section-head"><b>02</b><h3>Meter Readings</h3></div><div class="g3"><div class="field"><label>Check-Out Reading *</label><input id="currReading" type="number" min="0" step="0.01"><span class="hint">kWh at departure</span></div><div class="field"><label>Check-In Reading *</label><input id="prevReading" type="number" min="0" step="0.01"><span class="hint">kWh at arrival</span></div><div class="field"><label>Consumption (kWh)</label><input id="consumption" type="number" readonly></div></div></div>
+<div class="section"><div class="section-head"><b>03</b><h3>Rates & Exchange</h3></div><div class="g3"><div class="field"><label>Rate per kWh (₡) *</label><input id="rateColones" type="number" min="0" step="0.01"></div><div class="field"><label>Exchange Rate (₡ per $1)</label><input id="exchangeRate" type="number" value="510" min="1" step="0.01"></div><div class="field"><label>VAT (%)</label><input id="vatRate" type="number" value="13" min="0" max="100" step="0.01"></div></div><div class="note">VAT: 13%. Verify the exchange rate before billing.</div></div>
+<div class="section"><div class="section-head"><b>04</b><h3>Prepared By</h3></div><div class="g2"><div class="field"><label>Full Name</label><input id="preparedName" type="text"></div><div class="field"><label>Job Title</label><input id="preparedTitle" type="text"></div></div></div>
+<div class="alert-high" id="highAlert"><span id="highAlertText"></span></div><div class="actions"><button class="primary" onclick="calculate()">Calculate Bill</button><button class="secondary" onclick="clearForm()">Clear</button></div></div>
+<aside class="summary"><div class="empty" id="resultEmpty"><div><small>Billing Summary</small><h3>Invoice Preview</h3></div></div><div class="result-card" id="resultPanel"><div class="result-top"><div class="label">Total Due</div><div class="total" id="rTotalUSD">$0.00</div><div class="total-crc" id="rTotalColones">—</div></div><div class="result-label">Client Details</div><div class="result-row"><span class="result-row-label">Client</span><span class="result-row-value" id="rClientName">—</span></div><div class="result-row"><span class="result-row-label">Unit</span><span class="result-row-value" id="rUnit">—</span></div><div class="result-row"><span class="result-row-label">Period</span><span class="result-row-value" id="rPeriod">—</span></div><div class="result-label">Meter Readings</div><div class="result-row"><span class="result-row-label">Check-Out</span><span class="result-row-value" id="rCurrReading">—</span></div><div class="result-row"><span class="result-row-label">Check-In</span><span class="result-row-value" id="rPrevReading">—</span></div><div class="result-row"><span class="result-row-label">Consumption</span><span class="result-row-value" id="rConsumption">—</span></div><div class="result-label">Charges</div><div class="result-row"><span class="result-row-label">Rate / kWh</span><span class="result-row-value" id="rRate">—</span></div><div class="result-row"><span class="result-row-label">Subtotal</span><span class="result-row-value" id="rSubtotal">—</span></div><div class="result-row"><span class="result-row-label" id="rVatLabel">VAT (13%)</span><span class="result-row-value" id="rVat">—</span></div><div class="result-row"><span class="result-row-label">Exchange Rate</span><span class="result-row-value" id="rExchange">—</span></div><div class="result-actions"><button class="result-action-btn" onclick="printInvoice()">Print / PDF</button><button class="result-action-btn" onclick="shareWhatsApp()">WhatsApp</button><button class="result-action-btn" onclick="shareEmail()">Email</button></div></div></aside>
+</div></div></section><footer><div class="wrap foot"><strong>Monte Carlo Condominiums</strong><span>Electricity Billing · Internal Use Only</span></div></footer><script>
   document.getElementById('prevReading').addEventListener('input', updateConsumption);
   document.getElementById('currReading').addEventListener('input', updateConsumption);
 
@@ -164,21 +60,33 @@
     var totalColones     = subtotalColones + vatAmount;
     var totalUSD         = totalColones / exchangeRate;
 
+    // High consumption alert
+    var alertEl = document.getElementById('highAlert');
+    if (consumption > 300) {
+      document.getElementById('highAlertText').textContent = 'High consumption — ' + consumption.toFixed(2) + ' kWh exceeds the 300 kWh threshold. Please verify meter readings.';
+      alertEl.classList.add('visible');
+    } else {
+      alertEl.classList.remove('visible');
+    }
+
     document.getElementById('rClientName').textContent   = clientName || '—';
     document.getElementById('rUnit').textContent         = unitNumber || '—';
     document.getElementById('rPeriod').textContent       = formatDate(checkIn) + ' – ' + formatDate(checkOut);
+    document.getElementById('rCurrReading').textContent  = currReading.toFixed(0) + ' kWh';
+    document.getElementById('rPrevReading').textContent  = prevReading.toFixed(0) + ' kWh';
     document.getElementById('rConsumption').textContent  = consumption.toFixed(2) + ' kWh';
     document.getElementById('rRate').textContent         = '₡' + rateColones.toLocaleString('es-CR', {minimumFractionDigits:2});
     document.getElementById('rSubtotal').textContent     = '₡' + subtotalColones.toLocaleString('es-CR', {minimumFractionDigits:2});
     document.getElementById('rVatLabel').textContent     = 'VAT (' + vatRate + '%)';
     document.getElementById('rVat').textContent          = '₡' + vatAmount.toLocaleString('es-CR', {minimumFractionDigits:2});
-    document.getElementById('rTotalColones').textContent = '₡' + totalColones.toLocaleString('es-CR', {minimumFractionDigits:2});
+    document.getElementById('rTotalColones').textContent = '₡' + totalColones.toLocaleString('es-CR', {minimumFractionDigits:2}) + ' colones';
     document.getElementById('rExchange').textContent     = '₡' + exchangeRate.toLocaleString('es-CR') + ' = $1.00';
     document.getElementById('rTotalUSD').textContent     = '$' + totalUSD.toFixed(2);
 
+    document.getElementById('resultEmpty').style.display = 'none';
     var panel = document.getElementById('resultPanel');
     panel.classList.add('visible');
-    setTimeout(function(){ panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+    setTimeout(function(){ panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
   }
 
   function clearForm() {
@@ -193,6 +101,52 @@
     document.getElementById('preparedName').value = '';
     document.getElementById('preparedTitle').value = '';
     document.getElementById('resultPanel').classList.remove('visible');
+    document.getElementById('highAlert').classList.remove('visible');
+    document.getElementById('resultEmpty').style.display = '';
+  }
+
+  // ── SHARE ──
+  function buildShareMessage() {
+    var clientName   = document.getElementById('clientName').value.trim() || '—';
+    var unitNumber   = document.getElementById('unitNumber').value.trim() || '—';
+    var checkIn      = document.getElementById('checkIn').value;
+    var checkOut     = document.getElementById('checkOut').value;
+    var prevReading  = parseFloat(document.getElementById('prevReading').value) || 0;
+    var currReading  = parseFloat(document.getElementById('currReading').value) || 0;
+    var rateColones  = parseFloat(document.getElementById('rateColones').value) || 0;
+    var exchangeRate = parseFloat(document.getElementById('exchangeRate').value) || 510;
+    var vatRate      = parseFloat(document.getElementById('vatRate').value) || 13;
+    var consumption  = currReading - prevReading;
+    var subtotalColones = consumption * rateColones;
+    var vatAmount    = subtotalColones * (vatRate / 100);
+    var totalColones = subtotalColones + vatAmount;
+    var totalUSD     = totalColones / exchangeRate;
+
+    return '⚡ *Electricity Invoice — Monte Carlo Condominiums*\n\n'
+      + '*Client:* ' + clientName + '\n'
+      + '*Unit:* #' + unitNumber + '\n'
+      + '*Period:* ' + formatDate(checkIn) + ' – ' + formatDate(checkOut) + '\n\n'
+      + '*Check-Out Reading:* ' + currReading.toFixed(0) + ' kWh\n'
+      + '*Check-In Reading:* ' + prevReading.toFixed(0) + ' kWh\n'
+      + '*Consumption:* ' + consumption.toFixed(2) + ' kWh\n\n'
+      + '① Check-Out − Check-In = ' + consumption.toFixed(2) + ' kWh\n'
+      + '② × Rate ₡' + rateColones.toFixed(2) + ' = ₡' + subtotalColones.toLocaleString('en-US',{minimumFractionDigits:2}) + '\n'
+      + '③ + VAT (' + vatRate + '%) = ₡' + totalColones.toLocaleString('en-US',{minimumFractionDigits:2}) + '\n'
+      + '④ ÷ Exchange Rate ₡' + exchangeRate.toFixed(2) + '\n\n'
+      + '*TOTAL DUE: $' + totalUSD.toFixed(2) + ' USD*';
+  }
+
+  function shareWhatsApp() {
+    var msg = buildShareMessage();
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  function shareEmail() {
+    var clientName = document.getElementById('clientName').value.trim() || '—';
+    var unitNumber = document.getElementById('unitNumber').value.trim() || '—';
+    var msg = buildShareMessage();
+    var subject = 'Electricity Invoice – ' + clientName + ' – Unit #' + unitNumber;
+    window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg);
   }
 
   function printInvoice() {
@@ -227,9 +181,6 @@
 
     var today = new Date();
     var todayStr = today.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-
-    var energyAmt = subtotalColones * 0.62;
-    var distAmt   = subtotalColones * 0.25;
 
     function fmtCRC(n) { return '\u20A1' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
     function fmtUSD(n) { return '$' + n.toFixed(2); }
@@ -339,8 +290,6 @@
     if (!dateStr) return '—';
     var parts = dateStr.split('-');
     var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    return months[parseInt(parts[1])-1] + ' ' + parseInt(parts[2]) + ',\n' + parts[0];
+    return months[parseInt(parts[1])-1] + ' ' + parseInt(parts[2]) + ', ' + parts[0];
   }
-</script>
-</body>
-</html>
+</script></body></html>
